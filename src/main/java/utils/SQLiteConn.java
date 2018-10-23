@@ -1,31 +1,25 @@
 package utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteConn {
 
-    public static Connection connection;
-    public static Statement statement;
-    public static ResultSet resultSet;
+    private Connection connection;
+    private Statement statement;
+    private ResultSet resultSet;
+    private final String DB_NAME = "example.db";
+    private final String DB_RELATIVE_PATH = "src/test/resources";
 
-    public static void init() throws ClassNotFoundException, SQLException {
-//        String relative_resources_path = "src/test/resources";
-//        createFileOrRetrieve(relative_resources_path);
-        String test_res = new File("src/test/resources").getAbsoluteFile().toString();
+    public void init() throws ClassNotFoundException, SQLException {
+
+        String test_resources = new File(DB_RELATIVE_PATH).getAbsoluteFile().toString();
+        checkDirExists(test_resources);
         String os_separator = FileSystems.getDefault().getSeparator();
-        String db_name = "example.db";
-        String db_absolute_path = test_res + os_separator + db_name;
-//        final Path dir_path = Paths.get(db_full_path);
-//        em.out.println(dir_path.toString());
-        checkDirExists(test_res);
+        String db_absolute_path = test_resources + os_separator + DB_NAME;
 
         Class.forName("org.sqlite.JDBC");
         String sqlite_conf = "jdbc:sqlite:" + db_absolute_path;
@@ -35,14 +29,14 @@ public class SQLiteConn {
         System.out.println("> DataBase connection open");
     }
 
-    public static void createDB() throws SQLException {
+    public void createDB() throws SQLException {
         statement.execute("CREATE TABLE if not exists 'Users' ('id' INTEGER PRIMARY KEY AUTOINCREMENT" +
                 ", 'name' text, 'phone' INT);");
         System.out.println("Table created ow already exist.");
 
     }
 
-    public static void writeDB() throws SQLException {
+    public void writeDB() throws SQLException {
         statement.execute("INSERT INTO 'Users' ('name', 'phone') VALUES ('Mike', 12543); ");
         statement.execute("INSERT INTO 'Users' ('name', 'phone') VALUES ('Brendan', 321789); ");
         statement.execute("INSERT INTO 'Users' ('name', 'phone') VALUES ('Leila', 456123); ");
@@ -50,7 +44,7 @@ public class SQLiteConn {
         System.out.println("Table filled");
     }
 
-    public static List<String> executeSQL(String sql_statement) throws SQLException {
+    public List<String> executeSQL(String sql_statement) throws SQLException {
         resultSet = statement.executeQuery(sql_statement);
         List<String> column_name = new ArrayList<>();
         while (resultSet.next()) {
@@ -60,7 +54,7 @@ public class SQLiteConn {
         return column_name;
     }
 
-    public static void readDB() throws SQLException {
+    public void readDB() throws SQLException {
         resultSet = statement.executeQuery("SELECT * FROM Users");
         while (resultSet.next()) {
             int id = resultSet.getInt("id");
@@ -73,16 +67,10 @@ public class SQLiteConn {
         System.out.println("Table selected");
     }
 
-    public static void close() throws SQLException {
-        if (null != statement) {
-            statement.close();
-        }
-        if (null != resultSet) {
-            resultSet.close();
-        }
-        if (null != connection) {
-            connection.close();
-        }
+    public void close() throws SQLException {
+        if (null != statement) statement.close();
+        if (null != resultSet) resultSet.close();
+        if (null != connection) connection.close();
         System.out.println("> All DataBase connections are closed");
     }
 

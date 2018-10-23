@@ -16,9 +16,10 @@ public class JUnit5SmokeTest {
     @Test
     void justAnExample() throws SQLException, ClassNotFoundException {
 
-        SQLiteConn.init();
-        List<String> actual_res = SQLiteConn.executeSQL("SELECT * FROM Users");
-        SQLiteConn.close();
+        SQLiteConn db = new SQLiteConn();
+        db.init();
+        List<String> actual_res = db.executeSQL("SELECT * FROM Users");
+        db.close();
 
         assertEquals(4, actual_res.size());
         assertAll("Users",
