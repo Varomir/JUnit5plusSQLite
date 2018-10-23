@@ -1,5 +1,7 @@
 package first;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.SQLiteConn;
@@ -10,16 +12,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JUnit5SmokeTest {
+public class JUnit5SmokeTest extends BaseTest {
 
     @DisplayName("Smoke check for in-memory DataBase content")
     @Test
-    void justAnExample() throws SQLException, ClassNotFoundException {
+    void justAnExample() throws SQLException {
 
-        SQLiteConn db = new SQLiteConn();
-        db.init();
         List<String> actual_res = db.executeSQL("SELECT * FROM Users");
-        db.close();
 
         assertEquals(4, actual_res.size());
         assertAll("Users",
