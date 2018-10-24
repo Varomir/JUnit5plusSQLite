@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JUnit5SmokeTest extends BaseTest {
 
-    @DisplayName("Smoke check for in-memory DataBase content")
+    @DisplayName("Example sanity test for running in-memory DataBase and it's content.")
     @Test
     void justAnExample() throws SQLException {
 
