@@ -8,3 +8,5 @@ Run:
 1) src/main/java/utils/DB.java -> initialize your database `src/test/resources/example.db`
 2) Run your test
 src/test/java
+
+Generate JSON-schema based on the received response and `https://www.jsonschema.net/` site.
