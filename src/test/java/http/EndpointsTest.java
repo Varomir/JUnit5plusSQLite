@@ -51,7 +51,7 @@ public class EndpointsTest {
         then()
                 .statusCode(404)
                 .contentType(ContentType.JSON)
-                .assertThat().body(matchesJsonSchemaInClasspath("product-schema.json"))
+                .assertThat().body(matchesJsonSchemaInClasspath("wrong-endpoint-schema.json"))
                 .body(equalTo("{\"message\":\"Not Found\",\"documentation_url\":\"https://developer.github.com/v3\"}"));
     }
 }

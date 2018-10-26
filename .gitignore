@@ -3,5 +3,5 @@
 *.iws
 .idea/
 target/
-src/test/resources
+src/test/resources/*.db
 *.log
