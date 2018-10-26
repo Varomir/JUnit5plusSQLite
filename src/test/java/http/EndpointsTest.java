@@ -1,12 +1,16 @@
 package http;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static io.restassured.config.JsonConfig.jsonConfig;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class EndpointsTest {
@@ -20,7 +24,9 @@ public class EndpointsTest {
     @Test
     void githubZen() {
         get("/zen")
-                .then().contentType(equalTo("text/plain;charset=utf-8"));
+                .then().
+                statusCode(200).
+                contentType(ContentType.TEXT);
     }
 
     @DisplayName("Example with `org.json.JSONObject` for compare results.")
@@ -29,7 +35,23 @@ public class EndpointsTest {
         String expectedResponse = new JSONObject()
                 .put("message", "Not Found")
                 .put("documentation_url", "https://developer.github.com/v3").toString();
-        get("/users/varomir/organizations_url")
-                .then().body(equalTo(expectedResponse));
+        get("/users/Varomir/wrong-endpoint").then()
+                .statusCode(404)
+                .contentType(ContentType.JSON)
+                .body(equalTo(expectedResponse));
+    }
+
+    @DisplayName("Example with `Rest-Assured` and JSON schema verification.")
+    @Test
+    void validateContract() {
+        given()
+                .config(RestAssured.config().jsonConfig(jsonConfig())).
+        when()
+                .get("/users/Varomir/wrong-endpoint").
+        then()
+                .statusCode(404)
+                .contentType(ContentType.JSON)
+                .assertThat().body(matchesJsonSchemaInClasspath("product-schema.json"))
+                .body(equalTo("{\"message\":\"Not Found\",\"documentation_url\":\"https://developer.github.com/v3\"}"));
     }
 }
